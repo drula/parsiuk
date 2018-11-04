@@ -3,10 +3,10 @@ module Translator (
     translate
     ) where
 
-import Control.Exception (IOException)
-
--- TODO
+-- TODO: use some special error type instead of String
+-- TODO: implement
 -- | Translate Parsiuk code to C header code and C source code.
 -- The function is not yet implemented.
-translate :: String -> Either IOException (String, String)
+translate :: String -> Either String (String, String)
 translate _ = Right ("Dummy C header code\n", "Dummy C source code\n")
+-- translate _ = Left "Dummy error"
