@@ -15,7 +15,8 @@ main = do
         [] -> showUsage
         (pSouceName : _) -> do
             readPSourceResult <- try (readFile pSouceName)
-            result <- writeFiles (translate' readPSourceResult) (cHeaderName, cSourceName)
+            let translated = readPSourceResult >>= translate
+            result <- writeFiles translated (cHeaderName, cSourceName)
             case result of
                 Right () -> do
                     putStrLn $ "Files " ++ cHeaderName ++ " and " ++ cSourceName ++
@@ -35,12 +36,6 @@ main = do
         cSourceName = "dummy.c"
 
 -- TODO: add additional info
-
--- FIXME: make an Either monadic chain
--- WRITEME: docs
-translate' :: Either IOException String -> Either IOException (String, String)
-translate' (Right pSource) = Right $ translate pSource
-translate' (Left e) = Left e
 
 -- WRITEME: docs
 -- FIXME: pass file name as a parameter
