@@ -1,3 +1,4 @@
+-- | Module Main
 module Main where
 
 import Control.Exception (IOException, try)
@@ -6,6 +7,7 @@ import System.IO (hPutStrLn, stderr)
 
 import Translator -- FIXME: rename
 
+-- | The main application function
 main :: IO ()
 main = do
     args <- getArgs
@@ -34,6 +36,7 @@ main = do
 
 -- TODO: add additional info
 
+-- FIXME: make an Either monadic chain
 -- WRITEME: docs
 translate' :: Either IOException String -> Either IOException (String, String)
 translate' (Right pSource) = Right $ translate pSource
@@ -41,7 +44,7 @@ translate' (Left e) = Left e
 
 -- WRITEME: docs
 -- FIXME: pass file name as a parameter
--- FIXME: looks ugly
+-- FIXME: looks ugly, make a monadic chain
 writeFiles :: Either IOException (String, String) -> (FilePath, FilePath) -> IO (Either IOException ())
 writeFiles (Left e) _ = return (Left e)
 writeFiles (Right (cHeader, cSource)) (cHeaderName, cSourceName) = do
