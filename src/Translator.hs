@@ -9,4 +9,4 @@ module Translator (
 -- The function is not yet implemented.
 translate :: String -> Either String (String, String)
 -- translate _ = Right ("Dummy C header code\n", "Dummy C source code\n")
-translate _ = Left "The function is not yet implemented" -- FIXME: get the function name
+translate _ = Left "The function 'translate' is not yet implemented" -- FIXME: get the function name

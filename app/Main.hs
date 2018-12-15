@@ -6,6 +6,7 @@ import System.Environment (getArgs, getProgName)
 import System.IO (hPutStrLn, stderr)
 
 import Translator
+import Utilities
 
 -- | The main application function
 main :: IO ()
@@ -14,7 +15,7 @@ main = do
     case args of
         [] -> showUsage
         (pSouceName : _) -> do
-            result <- try $ readTranslateWrite pSouceName (cHeaderName, cSourceName)
+            result <- try $ readTranslateWrite pSouceName $ makeCFileNames pSouceName
             processResult result
 
     where
@@ -28,10 +29,6 @@ main = do
             hPutStrLn stderr $ "Input/output exception:"
             hPutStrLn stderr $ show e
         processResult (Right ()) = return ()
-
-        -- TODO
-        cHeaderName = "dummy.h"
-        cSourceName = "dummy.c"
 
 -- | Read Parsiuk source code file, translate it and write to C header and source files.
 -- Throw IOException in case of IO error.
