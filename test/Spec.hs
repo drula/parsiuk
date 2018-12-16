@@ -10,7 +10,8 @@ main = do
 
 translateTest :: TestTree
 translateTest = testCase "Translation" $
-    assertEqual "Checking if 'translate' is implemented" expectedResult $ translate "blablabla"
+    assertEqual "Checking if 'translate' is implemented"
+        expectedResult $ translate "blablabla"
     where expectedResult = Left "The function 'translate' is not yet implemented"
 
 makeCFileNamesTest :: TestTree

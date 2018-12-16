@@ -15,7 +15,8 @@ main = do
     case args of
         [] -> showUsage
         (pSouceName : _) -> do
-            result <- try $ readTranslateWrite pSouceName $ makeCFileNames pSouceName
+            result <- try $ readTranslateWrite pSouceName $
+                makeCFileNames pSouceName
             processResult result
 
     where
@@ -30,8 +31,8 @@ main = do
             hPutStrLn stderr $ show e
         processResult (Right ()) = return ()
 
--- | Read Parsiuk source code file, translate it and write to C header and source files.
--- Throw IOException in case of IO error.
+-- | Read Parsiuk source code file, translate it and write to C header and
+-- source files. Throw IOException in case of IO error.
 readTranslateWrite :: FilePath -> (FilePath, FilePath) -> IO ()
 readTranslateWrite pSouceName (cHeaderName, cSourceName) = do
     pSource <- readFile pSouceName
@@ -39,6 +40,7 @@ readTranslateWrite pSouceName (cHeaderName, cSourceName) = do
         Right (cHeader, cSource) -> do
             writeFile cHeaderName cHeader
             writeFile cSourceName cSource
+            -- TODO: check if cHeaderName and cSourceName files already exist
             putStrLn $ "Files " ++ cHeaderName ++
                         " and " ++ cSourceName ++
                         " are successfully created!"
