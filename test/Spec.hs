@@ -7,12 +7,22 @@ import Utilities
 main :: IO ()
 main = do
     defaultMain $ testGroup "Tests" [translateTest, makeCFileNamesTest]
+    -- TODO: add integration tests
 
 translateTest :: TestTree
-translateTest = testCase "Translation" $
-    assertEqual "Checking if 'translate' is implemented"
-        expectedResult $ translate "blablabla"
-    where expectedResult = Left "The function 'translate' is not yet implemented"
+translateTest = testGroup "Translation"
+    [testCase "translate" $ assertEqual dummyImplementation
+        dummyCCode $ translate dummyPCode,
+     testCase "toPTree" $ assertEqual dummyImplementation
+        (Right PTree) $ toPTree dummyPCode,
+     testCase "toCTree" $ assertEqual dummyImplementation
+        (Right CTree) $ toCTree PTree,
+     testCase "toCCode" $ assertEqual dummyImplementation
+        dummyCCode $ toCCode CTree]
+    where
+        dummyImplementation = "Dummy implementation"
+        dummyPCode = "blablabla"
+        dummyCCode = Right ("Dummy C header code\n", "Dummy C source code\n")
 
 makeCFileNamesTest :: TestTree
 makeCFileNamesTest = testGroup "Making C file names from Parsiuk file names"
