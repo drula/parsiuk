@@ -1,11 +1,6 @@
 -- | Translator module containing all translation functionality
 module Translator (
-    PTree(..),
-    CTree(..),
-    translate,
-    toPTree,
-    toCTree,
-    toCCode,
+    translate
     ) where
 
 -- TODO: use some special error type instead of String

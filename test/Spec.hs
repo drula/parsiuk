@@ -12,13 +12,7 @@ main = do
 translateTest :: TestTree
 translateTest = testGroup "Translation"
     [testCase "translate" $ assertEqual dummyImplementation
-        dummyCCode $ translate dummyPCode,
-     testCase "toPTree" $ assertEqual dummyImplementation
-        (Right PTree) $ toPTree dummyPCode,
-     testCase "toCTree" $ assertEqual dummyImplementation
-        (Right CTree) $ toCTree PTree,
-     testCase "toCCode" $ assertEqual dummyImplementation
-        dummyCCode $ toCCode CTree]
+        dummyCCode $ translate dummyPCode]
     where
         dummyImplementation = "Dummy implementation"
         dummyPCode = "blablabla"
