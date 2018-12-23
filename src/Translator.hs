@@ -3,10 +3,12 @@ module Translator (
     translate
     ) where
 
+import Lex
+
 -- TODO: use some special error type instead of String
 -- | Translate Parsiuk code to C header code and C source code.
 translate :: String -> Either String (String, String)
-translate pSource = toPTree pSource >>= toCTree >>= toCCode
+translate pSource = toTokens pSource >>= toPTree >>= toCTree >>= toCCode
 
 -- | Parsiuk AST. The type is not yet implemented.
 data PTree = PTree -- ^ Dummy Parsiuk Tree constructor
@@ -18,20 +20,26 @@ data CTree = CTree -- ^ Dummy C Tree constructor
     deriving (Eq, Show)
 -- TODO: implement
 
--- | Translate Parsiuk code to Parsiuk AST.
+-- | Translate Parsiuk code to a list of tokens.
 -- The function is not yet implemented.
-toPTree :: String -> Either String PTree
-toPTree _ = Right PTree
+toTokens :: String -> Either String [Token]
+toTokens pSource = Right $ alexScanTokens pSource
+-- TODO: process parcing errors
+
+-- | Translate a list of Parsiuk tokens to Parsiuk AST.
+-- The function is not yet implemented.
+toPTree :: [Token] -> Either String PTree
+toPTree _tokens = Right PTree
 -- TODO: implement
 
 -- | Translate Parsiuk AST to C AST.
 -- The function is not yet implemented.
 toCTree :: PTree -> Either String CTree
-toCTree _ = Right CTree
+toCTree _pTree = Right CTree
 -- TODO: implement
 
 -- | Translate C AST to C code (.h file and .c file)
 -- The function is not yet implemented.
 toCCode :: CTree -> Either String (String, String)
-toCCode _ = Right ("Dummy C header code\n", "Dummy C source code\n")
+toCCode _cTree = Right ("Dummy C header code\n", "Dummy C source code\n")
 -- TODO: implement
