@@ -4,16 +4,12 @@ module Translator (
     ) where
 
 import Lex
+import Synt
 
 -- TODO: use some special error type instead of String
 -- | Translate Parsiuk code to C header code and C source code.
 translate :: String -> Either String (String, String)
 translate pSource = toTokens pSource >>= toPTree >>= toCTree >>= toCCode
-
--- | Parsiuk AST. The type is not yet implemented.
-data PTree = PTree -- ^ Dummy Parsiuk Tree constructor
-    deriving (Eq, Show)
--- TODO: implement
 
 -- | C AST. The type is not yet implemented.
 data CTree = CTree -- ^ Dummy C Tree constructor
@@ -27,7 +23,7 @@ toTokens = alexScanTokens
 -- | Translate a list of Parsiuk tokens to Parsiuk AST.
 -- The function is not yet implemented.
 toPTree :: [Token] -> Either String PTree
-toPTree _tokens = Right PTree
+toPTree tokens = Right $ synt tokens
 -- TODO: implement
 
 -- | Translate Parsiuk AST to C AST.

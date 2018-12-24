@@ -1,5 +1,5 @@
 name:                parsiuk
-version:             0.0.2.0
+version:             0.0.2.2
 github:              "drula/parsiuk"
 license:             LGPL-3
 author:              "Andrey Dudinov"
@@ -10,6 +10,7 @@ extra-source-files:
 - README.md
 - ChangeLog.md
 - src/Lex.x
+- src/Synt.y
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package

@@ -3,15 +3,17 @@ import Test.Tasty.HUnit
 
 import Lex
 import Translator
+import Synt
 import Utilities
 
 main :: IO ()
 main = do
-    defaultMain $ testGroup "Tests" [lexTest, translateTest, makeCFileNamesTest]
+    defaultMain $ testGroup "Tests" [lexTest, syntTest, translateTest,
+        makeCFileNamesTest]
     -- TODO: add integration tests
 
 lexTest :: TestTree
-lexTest = testGroup "Lexical analyzing"
+lexTest = testGroup "Lexical analysis"
     [makeTest emptyStruct tEmptyStruct pEmptyStruct,
      makeTest wrongId tWrongId pWrongId,
      makeTest underscoreId tUnderscoreId pUnderscoreId,
@@ -36,6 +38,16 @@ lexTest = testGroup "Lexical analyzing"
         apostropheId = "identifier with apostrophe"
         pApostropheId = "struct rock'n'roll {\n}\n"
         tApostropheId = Left "lexical error at line 1, column 12"
+
+syntTest :: TestTree
+syntTest = testGroup "Syntax analysis"
+    [testCase emptyStruct $ assertEqual emptyStruct
+        pEmptyStruct $ synt tEmptyStruct]
+    where
+        emptyStruct = "empty structure"
+        tEmptyStruct = [TStruct, TIdent "empty_struct", TLeftCrBrace,
+                        TRightCrBrace, TEOF]
+        pEmptyStruct = PTree $ PStruct "empty_struct"
 
 translateTest :: TestTree
 translateTest = testGroup "Translation"
