@@ -7,7 +7,7 @@ import Lex
 
 %name synt
 %tokentype { Token }
-%error { parseError }
+%monad { Either String } { (>>=) } { return }
 
 %token
     ident   { TIdent $$ }
@@ -24,9 +24,9 @@ Struct : struct ident "{" "}" { PStruct $2 }
 
 {
 -- | Parsing error function.
-parseError :: [Token] -> a
-parseError tokens = error $ "Parsing error: " ++ show tokens
--- FIXME: rewrite to do not crash the application on parsing errors
+happyError :: [Token] -> Either String a
+happyError tokens = Left $ "Syntax error: " ++ show tokens
+-- TODO: show human readable message
 
 -- | Parsiuk AST. The type is not yet fully implemented.
 data PTree = PTree PStruct -- ^ Parsiuk Tree constructor taking a main

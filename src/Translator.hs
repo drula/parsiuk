@@ -21,10 +21,8 @@ toTokens :: String -> Either String [Token]
 toTokens = alexScanTokens
 
 -- | Translate a list of Parsiuk tokens to Parsiuk AST.
--- The function is not yet implemented.
 toPTree :: [Token] -> Either String PTree
-toPTree tokens = Right $ synt tokens
--- TODO: implement
+toPTree = synt
 
 -- | Translate Parsiuk AST to C AST.
 -- The function is not yet implemented.

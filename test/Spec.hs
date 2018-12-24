@@ -12,51 +12,81 @@ main = do
         makeCFileNamesTest]
     -- TODO: add integration tests
 
+{-
+    Prefixes:
+
+pSrc  - Parsiuk source code
+pTok  - Parsiuk tokens
+pTree - Parsiuk tree
+
+-}
+
 lexTest :: TestTree
 lexTest = testGroup "Lexical analysis"
-    [makeTest emptyStruct tEmptyStruct pEmptyStruct,
-     makeTest wrongId tWrongId pWrongId,
-     makeTest underscoreId tUnderscoreId pUnderscoreId,
-     makeTest apostropheId tApostropheId pApostropheId]
+    [makeTest emptyStruct (Right pTokEmptyStruct) pSrcEmptyStruct,
+     makeTest "wrong identifier" pTokWrongId pSrcWrongId,
+     makeTest "identifier with leading underscore" pTokUnderscoreId pSrcUnderscoreId,
+     makeTest "identifier with apostrophe" pTokApostropheId pSrcApostropheId]
     where
         makeTest name tResult pSource = testCase name $ assertEqual name
             tResult $ alexScanTokens pSource
 
-        emptyStruct = "empty structure"
-        pEmptyStruct = "struct empty_struct {\n}\n"
-        tEmptyStruct = Right [TStruct, TIdent "empty_struct", TLeftCrBrace,
-                              TRightCrBrace, TEOF]
+        makeLexicalError line column = Left $ "lexical error at line " ++
+                                       show line ++ ", column " ++ show column
 
-        wrongId = "wrong identifier"
-        pWrongId = "struct 1empty_struct {\n}\n"
-        tWrongId = Left "lexical error at line 1, column 8"
+        pSrcWrongId = makeEmptyStruct "1empty_struct"
+        pTokWrongId = makeLexicalError 1 8
 
-        underscoreId = "identifier with leading underscore"
-        pUnderscoreId = "struct _empty_struct {\n}\n"
-        tUnderscoreId = Left "lexical error at line 1, column 8"
+        pSrcUnderscoreId = makeEmptyStruct "_empty_struct"
+        pTokUnderscoreId = makeLexicalError 1 8
 
-        apostropheId = "identifier with apostrophe"
-        pApostropheId = "struct rock'n'roll {\n}\n"
-        tApostropheId = Left "lexical error at line 1, column 12"
+        pSrcApostropheId = makeEmptyStruct "rock'n'roll"
+        pTokApostropheId = makeLexicalError 1 12
 
 syntTest :: TestTree
 syntTest = testGroup "Syntax analysis"
-    [testCase emptyStruct $ assertEqual emptyStruct
-        pEmptyStruct $ synt tEmptyStruct]
+    [makeTest emptyStruct pTreeEmptyStruct pTokEmptyStruct,
+     makeTest "no initial 'struct' keyword" pTreeNoInitStruct pTokNoInitStruct,
+     makeTest "no structure name" pTreeNoStructId pTokNoStructId,
+     makeTest "no opening {" pTreeNoOpenCrBrace pTokNoOpenCrBrace,
+     makeTest "no closing }" pTreeNoClosingCrBrace pTokNoClosingCrBrace]
     where
-        emptyStruct = "empty structure"
-        tEmptyStruct = [TStruct, TIdent "empty_struct", TLeftCrBrace,
-                        TRightCrBrace, TEOF]
-        pEmptyStruct = PTree $ PStruct "empty_struct"
+        makeTest name expectedResult testData = testCase name $ assertEqual name
+            expectedResult $ synt testData
+
+        makeSyntaxError tokList = Left $ "Syntax error: " ++ show tokList
+
+        pTreeEmptyStruct = Right $ PTree $ PStruct pScrEmptyStructName
+
+        pTokNoInitStruct = [TIdent pScrEmptyStructName, TLeftCrBrace, TRightCrBrace, TEOF]
+        pTreeNoInitStruct = makeSyntaxError pTokNoInitStruct
+
+        pTokNoStructId = [TStruct, TLeftCrBrace, TRightCrBrace, TEOF]
+        pTreeNoStructId = makeSyntaxError $ tail pTokNoStructId
+
+        pTokNoOpenCrBrace = [TStruct, TIdent pScrEmptyStructName, TRightCrBrace, TEOF]
+        pTreeNoOpenCrBrace = makeSyntaxError [TRightCrBrace, TEOF]
+
+        pTokNoClosingCrBrace = [TStruct, TIdent pScrEmptyStructName, TLeftCrBrace, TEOF]
+        pTreeNoClosingCrBrace = makeSyntaxError [TEOF]
+
 
 translateTest :: TestTree
 translateTest = testGroup "Translation"
     [testCase "translate" $ assertEqual dummyImplementation
-        dummyCCode $ translate dummyPCode]
+        dummyCCode $ translate pSrcEmptyStruct]
     where
         dummyImplementation = "Dummy implementation"
-        dummyPCode = "blablabla"
         dummyCCode = Right ("Dummy C header code\n", "Dummy C source code\n")
+
+emptyStruct = "empty structure"
+pScrEmptyStructName = "empty_struct"
+pSrcEmptyStruct = makeEmptyStruct pScrEmptyStructName
+pTokEmptyStruct = [TStruct, TIdent pScrEmptyStructName, TLeftCrBrace,
+                   TRightCrBrace, TEOF]
+
+makeEmptyStruct :: String -> String
+makeEmptyStruct name = "struct " ++ name ++ " {\n}\n"
 
 makeCFileNamesTest :: TestTree
 makeCFileNamesTest = testGroup "Making C file names from Parsiuk file names"
