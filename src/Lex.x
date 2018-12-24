@@ -4,23 +4,43 @@
 module Lex where
 }
 
-%wrapper "basic" -- FIXME: choose a wrapper
+%wrapper "monad"
 
 $digit = [0-9]
 $alpha = [a-zA-Z]
 
 tokens :-
-    $white+                     ;
-    "{"                         { \_ -> TLeftCrBrace }
-    "}"                         { \_ -> TRightCrBrace }
-    "struct"                    { \_ -> TStruct }
-    $alpha [$alpha $digit \_]*  { \s -> TIdent s}
+    $white+                     ; -- ignore
+    "{"                         { \(_, _, _, _) _   -> return $ TLeftCrBrace }
+    "}"                         { \(_, _, _, _) _   -> return $ TRightCrBrace }
+    "struct"                    { \(_, _, _, _) _   -> return $ TStruct }
+    $alpha [$alpha $digit \_]*  { \(_, _, _, s) len -> return $ TIdent
+                                                              $ take len s }
 
 {
+
+-- | EOF function definition required by Alex
+alexEOF :: Alex Token
+alexEOF = return TEOF
+
+-- | Scan the string and return a list of tokens or an error message
+alexScanTokens :: String -> Either String [Token]
+alexScanTokens str = runAlex str $ do loop
+    where
+        loop = do
+            tok <- alexMonadScan
+            case tok of
+                TEOF -> return [tok]
+                otherwise -> do
+                    toks <- loop
+                    return (tok:toks)
+
 -- | Parsiuk token. The type is not yet fully implemented.
 data Token = TLeftCrBrace -- ^ Left curly brace
            | TRightCrBrace -- ^ Right curly brace
            | TStruct -- ^ "struct" keyword
            | TIdent String -- ^ Indentifier: the name of a structure, variable etc.
-    deriving Show
+           | TEOF -- ^ EOF
+    deriving (Eq, Show)
+    -- instance Show is only for debug
 }

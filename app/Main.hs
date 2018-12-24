@@ -44,4 +44,4 @@ readTranslateWrite pSouceName (cHeaderName, cSourceName) = do
             putStrLn $ "Files " ++ cHeaderName ++
                         " and " ++ cSourceName ++
                         " are successfully created!"
-        Left e -> hPutStrLn stderr e
+        Left e -> hPutStrLn stderr $ "Error: " ++ e

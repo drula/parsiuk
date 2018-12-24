@@ -21,10 +21,8 @@ data CTree = CTree -- ^ Dummy C Tree constructor
 -- TODO: implement
 
 -- | Translate Parsiuk code to a list of tokens.
--- The function is not yet implemented.
 toTokens :: String -> Either String [Token]
-toTokens pSource = Right $ alexScanTokens pSource
--- TODO: process parcing errors
+toTokens = alexScanTokens
 
 -- | Translate a list of Parsiuk tokens to Parsiuk AST.
 -- The function is not yet implemented.
