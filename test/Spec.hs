@@ -77,7 +77,8 @@ translateTest = testGroup "Translation"
         dummyCCode $ translate pSrcEmptyStruct]
     where
         dummyImplementation = "Dummy implementation"
-        dummyCCode = Right ("Dummy C header code\n", "Dummy C source code\n")
+        dummyCCode = Right (emptyCHeader, "Dummy C source code\n")
+        emptyCHeader = "typedef struct empty_struct {\n} empty_struct_t;\n"
 
 emptyStruct = "empty structure"
 pScrEmptyStructName = "empty_struct"
