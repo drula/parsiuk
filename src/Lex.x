@@ -24,8 +24,8 @@ alexEOF :: Alex Token
 alexEOF = return TEOF
 
 -- | Scan the string and return a list of tokens or an error message
-alexScanTokens :: String -> Either String [Token]
-alexScanTokens str = runAlex str $ do loop
+toTokens :: String -> Either String [Token]
+toTokens str = runAlex str $ do loop
     where
         loop = do
             tok <- alexMonadScan

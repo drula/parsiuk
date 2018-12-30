@@ -29,7 +29,7 @@ lexTest = testGroup "Lexical analysis"
      makeTest "identifier with apostrophe" pTokApostropheId pSrcApostropheId]
     where
         makeTest name tResult pSource = testCase name $ assertEqual name
-            tResult $ alexScanTokens pSource
+            tResult $ toTokens pSource
 
         makeLexicalError line column = Left $ "lexical error at line " ++
                                        show line ++ ", column " ++ show column
@@ -52,7 +52,7 @@ syntTest = testGroup "Syntax analysis"
      makeTest "no closing }" pTreeNoClosingCrBrace pTokNoClosingCrBrace]
     where
         makeTest name expectedResult testData = testCase name $ assertEqual name
-            expectedResult $ synt testData
+            expectedResult $ toPTree testData
 
         makeSyntaxError tokList = Left $ "Syntax error: " ++ show tokList
 

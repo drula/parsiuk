@@ -5,7 +5,7 @@ module Synt where
 import Lex
 }
 
-%name synt
+%name toPTree
 %tokentype { Token }
 %monad { Either String } { (>>=) } { return }
 
