@@ -19,9 +19,17 @@ instance Stringified CStruct where
                                 "} " ++ name ++ "_t;"]
     -- TODO: implement
 
--- | Translate C AST to C code (.h file and .c file).
-toCCode :: CTree -> (String, String)
-toCCode cTree = (toCHeader cTree, toCSource cTree)
+-- | Translate C AST to C code (.h file and .c file) with prefix addition.
+toCCode :: CTree -> String -> (String, String)
+toCCode cTree prefix = (toCHeader cTree', toCSource cTree')
+    where cTree' = prefixate cTree prefix
+
+-- | Add prefix to types and functions.
+-- The function is not yet fully implemented.
+prefixate :: CTree -> String -> CTree
+prefixate (CTree (CStruct name)) prefix = CTree (CStruct name')
+    where name' = if null prefix then name else prefix ++ "_" ++ name
+-- TODO: probably it needs to create Prefixable class
 
 -- | Get the C code for a C header file.
 -- The function is not yet fully implemented.

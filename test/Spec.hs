@@ -70,15 +70,15 @@ syntTest = testGroup "Syntax analysis"
         pTokNoClosingCrBrace = [TStruct, TIdent pScrEmptyStructName, TLeftCrBrace, TEOF]
         pTreeNoClosingCrBrace = makeSyntaxError [TEOF]
 
-
 translateTest :: TestTree
 translateTest = testGroup "Translation"
     [testCase "translate" $ assertEqual dummyImplementation
-        dummyCCode $ translate pSrcEmptyStruct]
+        dummyCCode $ translate pSrcEmptyStruct "test"]
+        -- TODO: add a test with zero prefix
     where
         dummyImplementation = "Dummy implementation"
         dummyCCode = Right (emptyCHeader, "Dummy C source code\n")
-        emptyCHeader = "typedef struct empty_struct {\n} empty_struct_t;\n"
+        emptyCHeader = "typedef struct test_empty_struct {\n} test_empty_struct_t;\n"
 
 emptyStruct = "empty structure"
 pScrEmptyStructName = "empty_struct"

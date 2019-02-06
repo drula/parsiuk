@@ -12,18 +12,24 @@ import Utilities
 main :: IO ()
 main = do
     args <- getArgs
-    case args of
-        [] -> showUsage
-        (pSouceName : _) -> do
-            result <- try $ readTranslateWrite pSouceName $
-                makeCFileNames pSouceName
+    let args' = getArgs' args
+    case args' of
+        Just (pSourceName, prefix) -> do
+            result <- try $ readTranslateWrite pSourceName prefix $
+                makeCFileNames pSourceName
             processResult result
+        Nothing -> showUsage
 
     where
         showUsage = do
             progName <- getProgName
-            putStrLn $ "Usage: " ++ progName ++ " <parsiuk file>"
+            putStrLn $ "Usage: " ++ progName ++ " <parsiuk file> [prefix]"
             -- TODO: allow to pass multiple file arguments
+            -- TODO: write more verbous help message
+
+        getArgs' (pSourceName : prefix : _) = Just (pSourceName, prefix)
+        getArgs' (pSourceName : []) = Just (pSourceName, "")
+        getArgs' [] = Nothing
 
         processResult :: Either IOException () -> IO ()
         processResult (Left e) = do
@@ -31,12 +37,13 @@ main = do
             hPutStrLn stderr $ show e
         processResult (Right ()) = return ()
 
--- | Read Parsiuk source code file, translate it and write to C header and
--- source files. Throw IOException in case of IO error.
-readTranslateWrite :: FilePath -> (FilePath, FilePath) -> IO ()
-readTranslateWrite pSouceName (cHeaderName, cSourceName) = do
-    pSource <- readFile pSouceName
-    case (translate pSource) of
+-- | Read Parsiuk source code file, translate it with adding prefix to
+-- C types and function names and write to C header and source files.
+-- Throw IOException in case of IO error.
+readTranslateWrite :: FilePath -> String -> (FilePath, FilePath) -> IO ()
+readTranslateWrite pSourceName prefix (cHeaderName, cSourceName) = do
+    pSource <- readFile pSourceName
+    case (translate pSource prefix) of
         Right (cHeader, cSource) -> do
             writeFile cHeaderName cHeader
             writeFile cSourceName cSource
