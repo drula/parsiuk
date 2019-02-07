@@ -72,13 +72,16 @@ syntTest = testGroup "Syntax analysis"
 
 translateTest :: TestTree
 translateTest = testGroup "Translation"
-    [testCase "translate" $ assertEqual dummyImplementation
-        dummyCCode $ translate pSrcEmptyStruct "test"]
-        -- TODO: add a test with zero prefix
+    [testCase "translate with prefix" $ assertEqual dummyImplementation
+        dummyCCodePfx $ translate pSrcEmptyStruct "test",
+     testCase "translate without prefix" $ assertEqual dummyImplementation
+        dummyCCode $ translate pSrcEmptyStruct ""]
     where
         dummyImplementation = "Dummy implementation"
+        dummyCCodePfx = Right (emptyCHeaderPfx, "Dummy C source code\n")
+        emptyCHeaderPfx = "typedef struct test_empty_struct {\n} test_empty_struct_t;\n"
         dummyCCode = Right (emptyCHeader, "Dummy C source code\n")
-        emptyCHeader = "typedef struct test_empty_struct {\n} test_empty_struct_t;\n"
+        emptyCHeader = "typedef struct empty_struct {\n} empty_struct_t;\n"
 
 emptyStruct = "empty structure"
 pScrEmptyStructName = "empty_struct"
