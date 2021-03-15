@@ -40,3 +40,20 @@ Example:
 parsiuk$ parsiuk-exe implemented.prl
 Files implemented.h and implemented.c are successfully created!
 ```
+
+`implemented.prl`:
+```c++
+struct main_struct {
+}
+```
+
+`implemented.h`:
+```c++
+typedef struct main_struct {
+} main_struct_t;
+```
+
+`implemented.c`:
+```c++
+Dummy C source code
+```
