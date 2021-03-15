@@ -38,7 +38,7 @@ toTokens str = runAlex str $ do loop
 -- | Parsiuk token. The type is not yet fully implemented.
 data Token = TLeftCrBrace -- ^ Left curly brace
            | TRightCrBrace -- ^ Right curly brace
-           | TStruct -- ^ "struct" keyword
+           | TStruct -- ^ `struct` keyword
            | TIdent String -- ^ Indentifier: the name of a structure, variable etc.
            | TEOF -- ^ EOF
     deriving (Eq, Show)

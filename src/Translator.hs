@@ -13,4 +13,4 @@ import Texter
 -- with prefix addition.
 translate :: String -> String -> Either String (String, String)
 translate pSource prefix = toTokens pSource >>= toPTree >>= toCTree >>=
-                           (return . (\tree -> toCCode tree prefix))
+                           (return . flip toCCode prefix)

@@ -33,11 +33,12 @@ parsiuk$ stack install
 ## Usage (after intallation)
 ```sh
 parsiuk-exe <prl file>
+parsiuk-exe <prl file> <prefix>
 ```
 
 Example:
 ```sh
-parsiuk$ parsiuk-exe implemented.prl
+parsiuk$ parsiuk-exe implemented.prl my
 Files implemented.h and implemented.c are successfully created!
 ```
 
@@ -49,11 +50,16 @@ struct main_struct {
 
 `implemented.h`:
 ```c++
-typedef struct main_struct {
-} main_struct_t;
+typedef struct my_main_struct {
+} my_main_struct_t;
 ```
 
 `implemented.c`:
 ```c++
-Dummy C source code
+prs_result_t my_main_struct_parse(uint8_t const *data, size_t size, my_main_struct_t **out) {
+}
+
+
+void my_main_struct_free(my_main_struct_t *p) {
+}
 ```

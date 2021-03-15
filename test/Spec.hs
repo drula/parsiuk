@@ -73,15 +73,21 @@ syntTest = testGroup "Syntax analysis"
 translateTest :: TestTree
 translateTest = testGroup "Translation"
     [testCase "translate with prefix" $ assertEqual dummyImplementation
-        dummyCCodePfx $ translate pSrcEmptyStruct "test",
+        emptyCCodePfx $ translate pSrcEmptyStruct "pfx",
      testCase "translate without prefix" $ assertEqual dummyImplementation
-        dummyCCode $ translate pSrcEmptyStruct ""]
+        emptyCCode $ translate pSrcEmptyStruct ""]
     where
         dummyImplementation = "Dummy implementation"
-        dummyCCodePfx = Right (emptyCHeaderPfx, "Dummy C source code\n")
-        emptyCHeaderPfx = "typedef struct test_empty_struct {\n} test_empty_struct_t;\n"
-        dummyCCode = Right (emptyCHeader, "Dummy C source code\n")
+        emptyCCodePfx = Right (emptyCHeaderPfx, emptyCSourcePfx)
+        emptyCHeaderPfx = "typedef struct pfx_empty_struct {\n} pfx_empty_struct_t;\n"
+        emptyCSourcePfx = "prs_result_t pfx_empty_struct_parse(uint8_t const *data, \
+                          \size_t size, pfx_empty_struct_t **out) {\n}\n\n\n\
+                          \void pfx_empty_struct_free(pfx_empty_struct_t *p) {\n}\n"
+        emptyCCode = Right (emptyCHeader, emptyCSource)
         emptyCHeader = "typedef struct empty_struct {\n} empty_struct_t;\n"
+        emptyCSource = "prs_result_t empty_struct_parse(uint8_t const *data, \
+                       \size_t size, empty_struct_t **out) {\n}\n\n\n\
+                       \void empty_struct_free(empty_struct_t *p) {\n}\n"
 
 emptyStruct = "empty structure"
 pScrEmptyStructName = "empty_struct"

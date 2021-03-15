@@ -7,7 +7,7 @@ import System.FilePath (addExtension, splitExtension)
 
 -- | Make C header and source file names from Parsiuk file name by changing
 -- .prl extension to .h and .c; if Parsiuk file has .h or .c extension, .h or .c
--- are changed to _h or _c and then .h and .c extensions added
+-- are changed to _h or _c and then .h and .c extensions are added.
 makeCFileNames :: FilePath -> (FilePath, FilePath)
 makeCFileNames pSouceName =
     if extension == ".h" || extension == ".c"
