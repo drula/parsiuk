@@ -20,14 +20,14 @@ instance Stringified CStruct where
     -- TODO: implement
 
 instance Stringified CFunction where
-    stringify (CFunction header instructions) = (show header ++ " {") : ([] ++ ["}"])
+    stringify (CFunction header instructions) = (show header ++ " {") : ["}"]
     -- TODO: implement
 
 instance Show CFnHeader where
     show (CFnHeader typ name varDecls) = show typ ++ name ++ "(" ++ varList ++ ")"
         where varList = case varDecls of
                         [] -> "void"
-                        otherwise -> intercalate ", " $ map show varDecls
+                        _ -> intercalate ", " $ map show varDecls
 
 instance Show CVarDecl where
     show (CVarDecl typ name) = show typ ++ name
@@ -37,8 +37,8 @@ instance Show CType where
     show CUint8T = "uint8_t "
     show CSizeT = "size_t "
     show CVoidT = "void "
-    show (CPtrT typ) = (show typ) ++ "*"
-    show (CConstT typ) = (show typ) ++ "const "
+    show (CPtrT typ) = show typ ++ "*"
+    show (CConstT typ) = show typ ++ "const "
     show (CUserT name) = name ++ " "
 
 -- | The class of types that need prefixation: adding prefixes
@@ -65,7 +65,7 @@ instance Prefixable CTree where
 instance Prefixable CFunction where
     prefixate prefix (CFunction header instructions) = CFunction header' instructions
         where
-            header' = (prefixate prefix) header
+            header' = prefixate prefix header
 
 instance Prefixable CFnHeader where
     prefixate prefix (CFnHeader typ name varDecls) = CFnHeader typ' name' varDecls'
@@ -88,7 +88,7 @@ instance Prefixable CVarDecl where
 -- The function is not yet fully implemented.
 -- FIXME: textify functions
 toCHeader :: CTree -> String
-toCHeader (CTree cStruct _) = (intercalate "\n" $ stringify cStruct) ++ "\n"
+toCHeader (CTree cStruct _) = intercalate "\n" (stringify cStruct) ++ "\n"
 -- TODO: implement (include guard, functions declarations)
 -- TODO: optimize
 
@@ -96,5 +96,5 @@ toCHeader (CTree cStruct _) = (intercalate "\n" $ stringify cStruct) ++ "\n"
 -- The function is not yet fully implemented.
 toCSource :: CTree -> String
 toCSource (CTree cStruct cFns) =
-    (intercalate "\n" $ intercalate ["\n"] $ map stringify cFns) ++ "\n"
+    intercalate "\n" (intercalate ["\n"] $ map stringify cFns) ++ "\n"
 -- TODO: implement
