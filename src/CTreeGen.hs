@@ -14,28 +14,28 @@ import Synt
 
 -- | C AST. The type is not yet fully implemented.
 data CTree = CTree CStruct [CFunction] -- ^ C Tree with C structure and functions description
-    deriving Eq
+    deriving (Eq, Show)
 -- TODO: implement
 
 -- | C structure with its name. The type is not yet fully implemented.
 data CStruct = CStruct String
-    deriving Eq
+    deriving (Eq, Show)
 
 -- | C function with its header and instruction list.
 data CFunction = CFunction CFnHeader [CInstruction]
-    deriving Eq
+    deriving (Eq, Show)
 
 -- | C function header: return value type, function name, parameter list.
 data CFnHeader = CFnHeader CType String [CVarDecl]
-    deriving Eq
+    deriving (Eq, Show)
 
 -- | C variable declaration: type and variable name.
 data CVarDecl = CVarDecl CType String
-    deriving Eq
+    deriving (Eq, Show)
 
 -- | C instruction. The type is not yet fully implemented.
 data CInstruction = CInstruction
-    deriving Eq
+    deriving (Eq, Show)
 
 -- | C value type.
 data CType = CResultT -- ^ `prs_result_t` (error code type)
@@ -45,7 +45,7 @@ data CType = CResultT -- ^ `prs_result_t` (error code type)
            | CPtrT CType -- ^ `*` type
            | CConstT CType -- ^ `const` type
            | CUserT String -- ^ user type (resulting structure)
-    deriving Eq
+    deriving (Eq, Show)
 
 -- | Translate Parsiuk AST to C AST.
 -- The function is not yet fully implemented.

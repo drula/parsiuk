@@ -12,6 +12,11 @@ class Stringified a where
     -- | Represent a value as a text
     stringify :: a -> [String]
 
+-- | Duplicate of standard `Show'` class, C representation of a type.
+class Show' a where
+    show' :: a -> String
+    -- TODO: probably use Stringified for all types
+
 -- | Text representation for CStruct.
 -- The function is not yet fully implemented.
 instance Stringified CStruct where
@@ -20,26 +25,26 @@ instance Stringified CStruct where
     -- TODO: implement
 
 instance Stringified CFunction where
-    stringify (CFunction header instructions) = (show header ++ " {") : ["}"]
+    stringify (CFunction header instructions) = (show' header ++ " {") : ["}"]
     -- TODO: implement
 
-instance Show CFnHeader where
-    show (CFnHeader typ name varDecls) = show typ ++ name ++ "(" ++ varList ++ ")"
+instance Show' CFnHeader where
+    show' (CFnHeader typ name varDecls) = show' typ ++ name ++ "(" ++ varList ++ ")"
         where varList = case varDecls of
                         [] -> "void"
-                        _ -> intercalate ", " $ map show varDecls
+                        _ -> intercalate ", " $ map show' varDecls
 
-instance Show CVarDecl where
-    show (CVarDecl typ name) = show typ ++ name
+instance Show' CVarDecl where
+    show' (CVarDecl typ name) = show' typ ++ name
 
-instance Show CType where
-    show CResultT = "prs_result_t "
-    show CUint8T = "uint8_t "
-    show CSizeT = "size_t "
-    show CVoidT = "void "
-    show (CPtrT typ) = show typ ++ "*"
-    show (CConstT typ) = show typ ++ "const "
-    show (CUserT name) = name ++ " "
+instance Show' CType where
+    show' CResultT = "prs_result_t "
+    show' CUint8T = "uint8_t "
+    show' CSizeT = "size_t "
+    show' CVoidT = "void "
+    show' (CPtrT typ) = show' typ ++ "*"
+    show' (CConstT typ) = show' typ ++ "const "
+    show' (CUserT name) = name ++ " "
 
 -- | The class of types that need prefixation: adding prefixes
 -- to user types and function names.
