@@ -101,5 +101,5 @@ toCHeader (CTree cStruct _) = intercalate "\n" (stringify cStruct) ++ "\n"
 -- The function is not yet fully implemented.
 toCSource :: CTree -> String
 toCSource (CTree cStruct cFns) =
-    intercalate "\n" (intercalate ["\n"] $ map stringify cFns) ++ "\n"
+    intercalate "\n" (intercalate [""] $ map stringify cFns) ++ "\n"
 -- TODO: implement
